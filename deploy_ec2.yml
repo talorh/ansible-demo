@@ -25,7 +25,7 @@
       image: "{{ ami_to_use }}"
       instance_profile_name: "{{ iam_role }}"
       instance_type: "{{ instance_type }}"
-      group: "{{ sg_to_use }}"
+      group_id: "{{ sg_to_use }}"
       key_name: "{{ key_to_use }}"
       region: ap-southeast-2
       state: present
