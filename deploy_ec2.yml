@@ -1,0 +1,61 @@
+---
+- name: Launches a new instance
+
+  hosts: all 
+
+  gather_facts: no
+  
+  tasks:
+
+  - set_fact: aws_region=ap-southeast-2
+  - set_fact: iam_role=EC2_Admin 
+  - set_fact: ami_to_use=vpc-7b19f11c
+  - set_fact: key_to_use=talor-key
+  - set_fact: subnet_to_use=subnet-e318b5aa
+
+  - debug: var=name
+  - debug: var=instance_type
+  - debug: var=disk_size
+
+  - name: Launch the instance
+    ec2:
+      assign_public_ip: no
+      count: 1
+      image: "{{ ami_to_use }}"
+      instance_profile_name: "{{ iam_role }}"
+      instance_type: "{{ instance_type }}"
+      group: "{{ sg_to_use }}"
+      key_name: "{{ key_to_use }}"
+      region: ap-southeast-2
+      state: present
+      vpc_subnet_id: "{{ subnet_to_use }}"
+      wait: yes
+      volumes:
+        - device_name: /dev/sda1
+          volume_type: gp2
+          volume_size: "{{ disk_size }}"
+          delete_on_termination: true
+      instance_tags:
+        Name: "{{ instance_name }}"
+        Creator: Ansible
+        Purpose: "Instance created by Ansible from {{ ami_to_use }}"
+    become: true
+    become_user: root
+    register: ec2_instance
+
+  - name: Get the root volume_id
+    ec2_vol:
+      instance: "{{ ec2_instance.instances[0].id }}"
+      device_name: '/dev/sda1'
+      region: ap-southeast-2
+    register: ec2_vol
+
+  - name: Tag the boot EBS volume
+    ec2_tag:
+      region: ap-southeast-2
+      resource: "{{ ec2_vol.volume_id }}"
+      tags:
+        Name: "{{ instance_name }}-boot"
+
+  - debug:
+      msg: The IP address to access "{{ instance_name }}" which is "{{ ec2_instance.instances[0].id }}" is "{{ ec2_instance.instances[0].private_ip }}"
