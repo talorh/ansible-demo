@@ -13,7 +13,7 @@
   - set_fact: key_to_use=talor-key
   - set_fact: subnet_to_use=subnet-e318b5aa
 
-  - debug: var=name
+  - debug: var=instance_name
   - debug: var=instance_type
   - debug: var=disk_size
 
@@ -39,8 +39,6 @@
         Name: "{{ instance_name }}"
         Creator: Ansible
         Purpose: "Instance created by Ansible from {{ ami_to_use }}"
-    become: true
-    become_user: root
     register: ec2_instance
 
   - name: Get the root volume_id
