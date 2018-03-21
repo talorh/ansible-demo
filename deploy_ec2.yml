@@ -12,6 +12,7 @@
   - set_fact: ami_to_use=vpc-7b19f11c
   - set_fact: key_to_use=talor-key
   - set_fact: subnet_to_use=subnet-e318b5aa
+  - set_fact: sg_to_use=sg-eb040c8d
 
   - debug: var=instance_name
   - debug: var=instance_type
