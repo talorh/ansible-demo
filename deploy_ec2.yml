@@ -30,7 +30,6 @@
       region: ap-southeast-2
       state: present
       vpc_subnet_id: "{{ subnet_to_use }}"
-      wait: yes
       volumes:
         - device_name: /dev/sda1
           volume_type: gp2
@@ -41,6 +40,7 @@
         Creator: Ansible
         Purpose: "Instance created by Ansible from {{ ami_to_use }}"
     register: ec2_instance
+    failed_when: false
 
   - name: Get the root volume_id
     ec2_vol:

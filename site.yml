@@ -12,7 +12,7 @@
   become: true
   become_user: root
   roles:
-          #    - os-packages
+    - os-packages
     - os-auditd
     - os-local-users
     - os-logrotate

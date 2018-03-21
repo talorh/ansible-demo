@@ -1,0 +1,146 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "EC2 CentOS 7 Instance Setup",
+	"Metadata": {
+		"AWS::CloudFormation::Interface": {
+			"ParameterGroups": [{
+				"Label": {
+					"default": "EC2 Instance Specifics"
+				},
+				"Parameters": [
+					"VPCID",
+					"Subnet",
+					"SecurityGroupIds",
+					"EnvironmentSize",
+					"EBSVolumeSize",
+					"AWSKeyPair",
+					"Backup",
+					"StartStop",
+					"Tenancy"
+				]
+			}]
+		}
+	},
+	"Parameters": {
+		"EnvironmentSize": {
+			"Description": "What size instance to provision",
+			"Type": "String",
+			"Default": "T2.MICRO",
+			"AllowedValues": [
+				"T2.MICRO",
+				"T2.MEDIUM",
+				"M4.LARGE",
+				"M4.XLARGE"
+			]
+		},
+		"EBSVolumeSize": {
+			"Type": "Number",
+			"Description": "Size in GB for EBS Disk",
+			"Default": 50,
+			"MinValue": 50,
+			"MaxValue": 1000
+		},
+		"VPCID": {
+			"Description": "VPC to deploy into",
+			"Type": "AWS::EC2::VPC::Id",
+			"Default": "vpc-7b19f11c"
+		},
+		"AWSKeyPair": {
+			"Description": "Amazon EC2 Key Pair",
+			"Type": "AWS::EC2::KeyPair::KeyName",
+			"Default": "talor-key"
+		},
+		"SecurityGroupIds": {
+			"Description": "Security Group to use",
+			"Type": "List<AWS::EC2::SecurityGroup::Id>",
+			"Default": "sg-eb040c8d"
+		},
+		"Subnet": {
+			"Description": "Define which subnet to use",
+			"Type": "AWS::EC2::Subnet::Id",
+			"Default": "subnet-e318b5aa"
+		}
+	},
+	"Mappings": {
+		"RegionMap": {
+			"ap-southeast-2": {
+				"AMI": "ami-b6bb47d4"
+			}
+		},
+		"InstanceSize": {
+			"T2.MICRO": {
+				"EC2": "t2.micro"
+			},
+			"T2.MEDIUM": {
+				"EC2": "t2.medium"
+			},
+			"M4.LARGE": {
+				"EC2": "m4.large"
+			},
+			"M4.XLARGE": {
+				"EC2": "m4.xlarge"
+			}
+		}
+	},
+	"Resources": {
+		"newEC2Instance": {
+			"Type": "AWS::EC2::Instance",
+			"Properties": {
+				"BlockDeviceMappings": [{
+					"DeviceName": "/dev/sda1",
+					"Ebs": {
+						"VolumeSize": {
+							"Ref": "EBSVolumeSize"
+						}
+					}
+				}],
+				"ImageId": {
+					"Fn::FindInMap": [
+						"RegionMap",
+						{
+							"Ref": "AWS::Region"
+						},
+						"AMI"
+					]
+				},
+				"InstanceType": {
+					"Fn::FindInMap": [
+						"InstanceSize",
+						{
+							"Ref": "EnvironmentSize"
+						},
+						"EC2"
+					]
+				},
+				"KeyName": {
+					"Ref": "AWSKeyPair"
+				},
+				"SecurityGroupIds": {
+					"Ref": "SecurityGroupIds"
+				},
+				"SubnetId": {
+					"Ref": "Subnet"
+				},
+
+				"UserData": {
+					"Fn::Base64": {
+						"Fn::Join": ["", [
+							"sudo curl --data 'host_config_key=09b8ba8a3ba2b80b3557807409b93a88' https://ansibletower.australiasoutheast.cloudapp.azure.com:443/api/v2/job_templates/256/callback/ --insecure"
+						]]
+					}
+				},
+				"Tags": [{
+						"Key": "Name",
+						"Value": {
+							"Ref": "AWS::StackName"
+						}
+					},
+					{
+						"Key": "OS",
+						"Value": "CentOS"
+					}
+				]
+			}
+		}
+	}
+}
