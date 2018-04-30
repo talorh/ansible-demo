@@ -26,5 +26,7 @@
 
 - name: Install Jenkins 
   hosts: jenkins
+  become: true
+  become_user: root
   roles:
-    - { role: jenkins, become: yes, become_user: root }
+     - jenkins-install
