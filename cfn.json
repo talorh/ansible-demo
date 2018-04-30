@@ -125,6 +125,7 @@
 				"UserData": {
 					"Fn::Base64": {
 						"Fn::Join": ["", [
+							"#!/bin/bash \n",
 							"sudo curl --data 'host_config_key=09b8ba8a3ba2b80b3557807409b93a88' https://ansibletower.australiasoutheast.cloudapp.azure.com:443/api/v2/job_templates/256/callback/ --insecure"
 						]]
 					}

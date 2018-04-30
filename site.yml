@@ -24,3 +24,7 @@
     - os-timezone
     - os-motd
 
+- name: Install Jenkins 
+  hosts: jenkins
+  roles:
+    - { role: jenkins, become: yes, become_user: root }
