@@ -9,4 +9,4 @@
       name: Ansible 
       url_username: "{{ jenkins_username }}"
       url_password: "{{ jenkins_password }}"
-      url: http://ec2-13-211-210-78.ap-southeast-2.compute.amazonaws.com:8080
+      url: "{{ jenkins_url }}" 
