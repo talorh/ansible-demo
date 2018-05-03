@@ -42,9 +42,6 @@
     register: ec2_instance
     failed_when: false
 
-
-  - debug: var=ec2_instance
-
   - name: Get the root volume_id
     ec2_vol:
       instance: "{{ ec2_instance.instances[0].id }}"
@@ -59,11 +56,14 @@
       tags:
         Name: "{{ instance_name }}-boot"
 
+  - name: Grab EC2 instance facts
+    ec2_instance_facts:
+      instance_ids:
+       - "{{ ec2_instance.instances[0].id }}"
+    register: instance_facts
+
   - name: Wait for 22 to start listening 
     wait_for:
       port: 22
-      host: "{{ ec2_instance.instances[0].public_ip }}"
+      host: "{{ instance_facts.instances[0].network_interfaces[0].association.public_ip }}"
     msg: "Timeout waiting for 22 to respond"
-
-  - debug:
-      msg: The IP address to access "{{ instance_name }}" which is "{{ ec2_instance.instances[0].id }}" is "{{ ec2_instance.instances[0].private_ip }}"
