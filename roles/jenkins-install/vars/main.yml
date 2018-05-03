@@ -30,5 +30,5 @@ email:
   smtp_ssl: 'true'
   default_email_suffix: '@example.com'
 
-jenkins_admin_user: admin
-jenkins_admin_password: admin
+  #jenkins_admin_user: admin
+  #jenkins_admin_password: admin
