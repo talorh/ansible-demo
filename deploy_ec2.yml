@@ -56,5 +56,10 @@
       tags:
         Name: "{{ instance_name }}-boot"
 
+  - name: Wait for 22 to start listening 
+    wait_for:
+      port: 22
+    msg: "Timeout waiting for 22 to respond"
+
   - debug:
       msg: The IP address to access "{{ instance_name }}" which is "{{ ec2_instance.instances[0].id }}" is "{{ ec2_instance.instances[0].private_ip }}"
