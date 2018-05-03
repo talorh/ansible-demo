@@ -58,6 +58,7 @@
 
   - name: Grab EC2 instance facts
     ec2_instance_facts:
+      region: ap-southeast-2
       instance_ids:
        - "{{ ec2_instance.instances[0].id }}"
     register: instance_facts
