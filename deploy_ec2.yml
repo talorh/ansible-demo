@@ -9,7 +9,7 @@
 
   - set_fact: aws_region=ap-southeast-2
   - set_fact: iam_role=EC2_Admin 
-  - set_fact: ami_to_use=ami-b6bb47d4
+  - set_fact: ami_to_use=ami-dda36dbf
   - set_fact: key_to_use=talor-key
   - set_fact: subnet_to_use=subnet-e318b5aa
   - set_fact: sg_to_use=sg-a1450ed8
