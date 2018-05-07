@@ -2,7 +2,6 @@
 - name: OS | local users | Create Local Users
   user:
     name: "{{ item.value.user_name }}"
-    uid: "{{ item.value.user_uid }}"
     group: wheel
     home: "/home/{{ item.value.user_name }}"
     comment: "{{ item.value.user_comment }}"
