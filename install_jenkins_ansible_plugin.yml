@@ -5,12 +5,16 @@
   become: true
   tasks:
 
-  - name: Install Ansible plugin 
+  - name: Install Ansible plugins
     jenkins_plugin:
-      name: Ansible 
+      name: "{{ item }}"
       url_username: "{{ jenkins_username }}"
       url_password: "{{ jenkins_password }}"
       url: "{{ jenkins_url }}" 
+    with_items:
+      - AnsiColor
+      - ansible
+      - ansible-tower
     register: plugin_install
 
   - name: Install Ansible Tower plugin
