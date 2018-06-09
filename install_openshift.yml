@@ -1,0 +1,13 @@
+---
+
+- name: Install Openshift 
+  hosts: all 
+  become: true
+  vars:
+    docker_engine_version: 1.12.6-1
+    openshift_version: 3.7.9
+    vpc_subnet: "172.30.0.0/16"
+  become_user: root
+  roles:
+     - docker-engine-install
+     - openshift-install

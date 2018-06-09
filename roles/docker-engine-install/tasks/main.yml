@@ -1,0 +1,16 @@
+---
+
+- name: Enable Repository for Docker Install
+  shell: yum-config-manager --add-repo https://docs.docker.com/v1.13/engine/installation/linux/repo_files/centos/docker.repo
+
+- name: Install Docker Engine
+  yum:
+    name: "docker-engine-{{ docker_engine_version }}.el7.centos"
+    state: installed
+  notify: restart docker
+
+- name: Push out our daemon.json file
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+  notify: restart docker

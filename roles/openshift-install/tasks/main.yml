@@ -1,0 +1,43 @@
+---
+
+- name: Install wget
+  yum:
+    name: wget
+    state: installed
+
+- name: Download Openshift 
+  get_url:
+    url: "https://mirror.openshift.com/pub/openshift-v3/clients/{{ openshift_version }}/linux/oc.tar.gz" 
+    dest: /tmp/oc.tar.gz
+    validate_certs: no
+
+- name: Unpack /tmp/oc.tar.gz 
+  unarchive:
+    src: /tmp/oc.tar.gz 
+    dest: /tmp/
+    remote_src: true
+    owner: root
+
+- name: Copy oc executable into /usr/bin
+  copy:
+    src: /tmp/oc
+    dest: /usr/bin/oc
+    remote_src: yes
+    mode: 0700  
+
+- name: Grab my public IP
+  shell: "curl http://169.254.169.254/latest/meta-data/public-ipv4 > /tmp/.pubip"
+  changed_when: false 
+
+- name: Gab my public DNS name
+  shell: "curl http://169.254.169.254/latest/meta-data/public-hostname > /tmp/.pubhostname"
+  changed_when: false 
+
+- name: Bring up Openshift
+  shell: "oc cluster up 
+    --public-hostname=$(cat /tmp/.pubhostname)
+    --routing-suffix=$(cat /tmp/.pubip).nip.io
+    --host-data-dir='/home/ec2-user/persistence/data' 
+    --host-config-dir='/home/ec2-user/persistence/config' 
+    --skip-registry-check=true 
+    --use-existing-config=true"    
