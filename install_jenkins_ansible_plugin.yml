@@ -17,14 +17,6 @@
       - ansible-tower
     register: plugin_install
 
-  - name: Install Ansible Tower plugin
-    jenkins_plugin:
-      name: "Ansible Tower"
-      url_username: "{{ jenkins_username }}"
-      url_password: "{{ jenkins_password }}"
-      url: "{{ jenkins_url }}"
-    register: plugin_install
-    
   - name: Restart Jenkins
     service:
       name: jenkins
