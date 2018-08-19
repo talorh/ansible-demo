@@ -1,5 +1,8 @@
 ---
 
+- name: Grab the GPG Key
+  shell: sudo rpm --import "https://sks-keyservers.net/pks/lookup?op=get&search=0xee6d536cf7dc86e2d7d56f59a178ac6c6238f52e"
+
 - name: Enable Repository for Docker Install
   shell: sudo yum-config-manager --add-repo https://packages.docker.com/1.12/yum/repo/main/centos/7 
 
@@ -8,6 +11,11 @@
     name: "docker-engine"
     state: installed
   notify: restart docker
+
+- name: Make sure /etc/docker exists
+  file:
+    path: /etc/docker
+    state: directory
 
 - name: Push out our daemon.json file
   template:
